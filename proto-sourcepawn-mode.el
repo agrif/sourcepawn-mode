@@ -44,8 +44,7 @@
 
 ;; set up the syntax highlighting defaults
 (defvar sourcepawn-mode-font-lock-defaults
-	  ;; C++ style comments
-	  `(("\\(//.*\\)$" 1 font-lock-comment-face t)
+	  `(
 		;; preprocessor statements
 		(,sourcepawn-mode-font-lock-regexp-preprocessor-full 0 font-lock-preprocessor-face keep)
 		;; string color for braced include statements
@@ -65,7 +64,8 @@
 		(,sourcepawn-mode-font-lock-regexp-generated-forwards 1 font-lock-function-name-face)
 		
 		;; variable declarations
-		(sourcepawn-mode-font-lock-matcher-variable-names 1 font-lock-variable-name-face))
+		(sourcepawn-mode-font-lock-matcher-variable-names 1 font-lock-variable-name-face)
+	   )
 	  "The default syntax highlighting rules for sourcepawn-mode.")
 
 ;; set up the syntax table
@@ -74,9 +74,10 @@
 	;; make _ a words character, so tokens == words, and word movement commands make sense
 	(modify-syntax-entry ?_ "w" st)
 	
-	;; magick from an old font-lock mailing list for C-style comments
-	(modify-syntax-entry ?/ ". 14" st)
-	(modify-syntax-entry ?* ". 23" st)
+	;; syntax classes used in C and C++ style comments
+	(modify-syntax-entry ?/ "_ 124b" st)
+	(modify-syntax-entry ?* "_ 23" st)
+	(modify-syntax-entry (string-to-char "\n") "> b")
 	st)
   "Syntax table for sourcepawn-mode.")
 
