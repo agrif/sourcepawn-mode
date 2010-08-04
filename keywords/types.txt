@@ -1,0 +1,5 @@
+# Compiler-defined types
+bool
+String
+Float
+Fixed

@@ -1,0 +1,12 @@
+cellbits
+cellmax
+cellmin
+charbits
+charmax
+charmin
+ucharmax
+debug
+
+# Compiler-defined constants
+false
+true

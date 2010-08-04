@@ -1,0 +1,3 @@
+# don't track sp-include -- get these from SourceMod directly
+sp-include/
+

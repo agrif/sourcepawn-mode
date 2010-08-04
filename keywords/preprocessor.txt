@@ -1,0 +1,26 @@
+# words that are valid starts to preprocessor directives
+assert
+define
+else
+elseif
+emit
+endif
+endinput
+endscript
+if
+include
+pragma
+error
+tryinclude
+undef
+
+# words that show up later in directives
+ctrlchar
+defined
+dynamic
+library
+pack
+rational
+semicolon
+tabsize
+unused
