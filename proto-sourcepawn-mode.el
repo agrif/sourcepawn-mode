@@ -81,6 +81,28 @@
 	st)
   "Syntax table for sourcepawn-mode.")
 
+;; our indentation function
+;; TODO: handle blank lines, lines starting with "}+" and proper point handling on indent
+(defun sourcepawn-mode-indent-line ()
+  "Indent the current line as SourcePawn code."
+  (interactive)
+  (beginning-of-line)
+  ;; set ret to 'noindent to signal indentation cannot be done
+  (let (ret)
+	(indent-line-to
+	 (max 0
+		  (if (bobp)
+			  0 ;; first line
+			;; not first line, what should we indent to?
+			;; check our relative matching-parens ()[]{} depth in the last line
+			;; and indent in or out that much relative to last line's indentation
+			(save-excursion
+			  (forward-line -1)
+			  (+ (current-indentation)
+				 (* default-tab-width
+					(car (parse-partial-sexp (line-beginning-position) (line-end-position)))))))))
+	ret))
+
 ;; define our mode
 (define-derived-mode sourcepawn-mode fundamental-mode
   "SourcePawn"
@@ -89,6 +111,9 @@
   (set (make-local-variable 'font-lock-defaults)
 	   '(sourcepawn-mode-font-lock-defaults nil))
 
+  ;; indentation
+  (set (make-local-variable 'indent-line-function) 'sourcepawn-mode-indent-line)
+  
   ;; comments
   (set (make-local-variable 'comment-start) "//")
   (set (make-local-variable 'comment-start-skip) "/\\*+ *\\|//+ *")
