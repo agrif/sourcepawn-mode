@@ -1,3 +1,6 @@
 # don't track sp-include -- get these from SourceMod directly
 sp-include/
 
+# these are generated files
+keywords/generated/
+sourcepawn-mode.el
