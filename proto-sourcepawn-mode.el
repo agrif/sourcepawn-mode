@@ -82,7 +82,7 @@
   "Syntax table for sourcepawn-mode.")
 
 ;; our indentation function
-;; TODO: handle blank lines, lines starting with "}+" and proper point handling on indent
+;; TODO: lines starting with "}+" and proper point handling on indent
 (defun sourcepawn-mode-indent-line ()
   "Indent the current line as SourcePawn code."
   (interactive)
@@ -97,7 +97,11 @@
 			;; check our relative matching-parens ()[]{} depth in the last line
 			;; and indent in or out that much relative to last line's indentation
 			(save-excursion
+			  ;; first find last non-blank line
 			  (forward-line -1)
+			  (while (looking-at-p "[ \t]*$")
+				(forward-line -1))
+			  ;; add in the indentation for this S-EXP level
 			  (+ (current-indentation)
 				 (* default-tab-width
 					(car (parse-partial-sexp (line-beginning-position) (line-end-position)))))))))
