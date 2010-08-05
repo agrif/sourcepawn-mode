@@ -122,7 +122,7 @@
   (save-excursion
 	(beginning-of-line)
 	;; can't be a special block if we start with a brace!
-	(if (or (bobp) (looking-at-p "[ \t]*{"))
+	(if (or (bobp) (looking-at "[ \t]*{"))
 		nil
 	  (forward-line -1)
 	  (beginning-of-line)
@@ -169,15 +169,15 @@
 				  ;; count how many "}" there are on the line we will indent
 				  ;; DECREMENT because we want these to act like the end of the last line
 				  (save-excursion
-					(while (and (looking-at-p "[ \t]*}") (re-search-forward "[ \t]*}" (line-end-position) t))
+					(while (and (looking-at "[ \t]*}") (re-search-forward "[ \t]*}" (line-end-position) t))
 					  (setq endbrace-count (- endbrace-count 1)))
 					;; first find last non-blank line, non-special line
 					(forward-line -1)
-					(while (and (not (bobp)) (or (looking-at-p "[ \t]*$") (sourcepawn-mode-single-line-block-p)))
+					(while (and (not (bobp)) (or (looking-at "[ \t]*$") (sourcepawn-mode-single-line-block-p)))
 					  (forward-line -1))
 					;; count how many "}" there are at the beginning of the line (which is currently the last line)
 					;; INCREMENT because these are working against what parse-partial-sexp finds
-					(while (and (looking-at-p "[ \t]*}") (re-search-forward "[ \t]*}" (line-end-position) t))
+					(while (and (looking-at "[ \t]*}") (re-search-forward "[ \t]*}" (line-end-position) t))
 					  (setq endbrace-count (+ endbrace-count 1)))
 					;; add in the indentation for this S-EXP level
 					(+ (current-indentation)

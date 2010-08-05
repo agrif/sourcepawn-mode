@@ -48,7 +48,7 @@
 		(if (null secondary)
 			nil
 		  ;; we have a list rule as well
-		  (while (and (looking-at-p secondary) (re-search-forward secondary limit t))
+		  (while (and (looking-at secondary) (re-search-forward secondary limit t))
 			(let ((submatch (match-string 1)))
 			  (if (or (null submatch) (string-in-list submatch ret))
 				  nil
