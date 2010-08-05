@@ -1,6 +1,6 @@
 .PHONY : all clean scan generate dist
 
-VERSION=0.1
+VERSION=0.2~git
 
 all : scan generate
 
