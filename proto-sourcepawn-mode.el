@@ -138,45 +138,52 @@
 			(current-indentation)
 		  nil)))))
 
+;; a replacement for indent-line-to with sane point management
+(defun sourcepawn-mode-indent-line-to (column)
+  "Like indent-line-to but with sane point management."
+  (if (string-match "^[ \\t]*$" (buffer-substring (point-at-bol) (point)))
+	  (indent-line-to column)
+	(save-excursion (indent-line-to column))))
+
 ;; our indentation function
-;; FIXME: proper point handling on indent
 (defun sourcepawn-mode-indent-line ()
   "Indent the current line as SourcePawn code."
   (interactive)
-  (beginning-of-line)
   ;; set ret to 'noindent to signal indentation cannot be done
   ;; endbrace-count stores how many "}" we see right at the beginning of the line
   (let (ret (endbrace-count 0))
-	(indent-line-to
+	(sourcepawn-mode-indent-line-to
 	 ;; make sure we don't indent to a negative
 	 (max 0
-		  (if (bobp)
-			  0 ;; first line
-			;; not first line, what should we indent to?
-			(let ((special-indent (sourcepawn-mode-single-line-block-p)))
-			  (if (not (null special-indent))
-				  (+ default-tab-width special-indent) ;; indent once, we're special
-				;; we're not special :(
-				;; check our relative matching-parens ()[]{} depth in the last line
-				;; and indent in or out that much relative to last line's indentation
-				(save-excursion
+		  (save-excursion
+			(beginning-of-line)
+			(if (bobp)
+				0 ;; first line
+			  ;; not first line, what should we indent to?
+			  (let ((special-indent (sourcepawn-mode-single-line-block-p)))
+				(if (not (null special-indent))
+					(+ default-tab-width special-indent) ;; indent once, we're special
+				  ;; we're not special :(
+				  ;; check our relative matching-parens ()[]{} depth in the last line
+				  ;; and indent in or out that much relative to last line's indentation
 				  ;; count how many "}" there are on the line we will indent
 				  ;; DECREMENT because we want these to act like the end of the last line
-				  (while (and (looking-at-p "[ \t]*}") (re-search-forward "[ \t]*}" (line-end-position) t))
-					(setq endbrace-count (- endbrace-count 1)))
-				  ;; first find last non-blank line, non-special line
-				  (forward-line -1)
-				  (while (and (not (bobp)) (or (looking-at-p "[ \t]*$") (sourcepawn-mode-single-line-block-p)))
-					(forward-line -1))
-				  ;; count how many "}" there are at the beginning of the line (which is currently the last line)
-				  ;; INCREMENT because these are working against what parse-partial-sexp finds
-				  (while (and (looking-at-p "[ \t]*}") (re-search-forward "[ \t]*}" (line-end-position) t))
-					(setq endbrace-count (+ endbrace-count 1)))
-				  ;; add in the indentation for this S-EXP level
-				  (+ (current-indentation)
-					 (* default-tab-width
-						(+ (car (parse-partial-sexp (line-beginning-position) (line-end-position)))
-						   endbrace-count)))))))))
+				  (save-excursion
+					(while (and (looking-at-p "[ \t]*}") (re-search-forward "[ \t]*}" (line-end-position) t))
+					  (setq endbrace-count (- endbrace-count 1)))
+					;; first find last non-blank line, non-special line
+					(forward-line -1)
+					(while (and (not (bobp)) (or (looking-at-p "[ \t]*$") (sourcepawn-mode-single-line-block-p)))
+					  (forward-line -1))
+					;; count how many "}" there are at the beginning of the line (which is currently the last line)
+					;; INCREMENT because these are working against what parse-partial-sexp finds
+					(while (and (looking-at-p "[ \t]*}") (re-search-forward "[ \t]*}" (line-end-position) t))
+					  (setq endbrace-count (+ endbrace-count 1)))
+					;; add in the indentation for this S-EXP level
+					(+ (current-indentation)
+					   (* default-tab-width
+						  (+ (car (parse-partial-sexp (line-beginning-position) (line-end-position)))
+							 endbrace-count))))))))))
 	ret))
 
 ;; Symbol lists auto-generated from SourcePawn includes. As such, there may be errors.
