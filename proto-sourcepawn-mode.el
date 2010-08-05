@@ -98,7 +98,6 @@
 							(if (re-search-forward "\\(//\\|/\\*\\)" (line-end-position) t)
 								(match-beginning 1)
 							  (line-end-position))))
-		(message (format "limit point: %i end line: %i" limit-point (line-end-position)))
 		(if (and 
 			 (re-search-forward "[ \t]*\\<\\(?:if\\|while\\|for\\)\\>[ \t]*([^\n]*)[ \t]*" limit-point t)
 			 (equal (point) limit-point))
