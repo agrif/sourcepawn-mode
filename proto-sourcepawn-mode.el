@@ -81,6 +81,30 @@
 	st)
   "Syntax table for sourcepawn-mode.")
 
+;; tells us when we are directly after a non-braced if/while/for statement
+;; returns nil if not, or the indentation of the if/while/for if it is
+(defun sourcepawn-mode-single-line-block-p ()
+  "Tells us if the current line is a single-expression block, and returns the indentation of the start of that block."
+  (save-excursion
+	(beginning-of-line)
+	;; can't be a special block if we start with a brace!
+	(if (or (bobp) (looking-at-p "[ \t]*{"))
+		nil
+	  (forward-line -1)
+	  (beginning-of-line)
+	  (let ((limit-point (point)))
+		(setq limit-point (save-excursion
+							;; put point at the end of the line, or the start of a comment
+							(if (re-search-forward "\\(//\\|/\\*\\)" (line-end-position) t)
+								(match-beginning 1)
+							  (line-end-position))))
+		(message (format "limit point: %i end line: %i" limit-point (line-end-position)))
+		(if (and 
+			 (re-search-forward "[ \t]*\\<\\(?:if\\|while\\|for\\)\\>[ \t]*([^\n]*)[ \t]*" limit-point t)
+			 (equal (point) limit-point))
+			(current-indentation)
+		  nil)))))
+
 ;; our indentation function
 ;; TODO: lines after braceless if (...) and proper point handling on indent
 (defun sourcepawn-mode-indent-line ()
@@ -96,26 +120,30 @@
 		  (if (bobp)
 			  0 ;; first line
 			;; not first line, what should we indent to?
-			;; check our relative matching-parens ()[]{} depth in the last line
-			;; and indent in or out that much relative to last line's indentation
-			(save-excursion
-			  ;; count how many "}" there are on the line we will indent
-			  ;; DECREMENT because we want these to act like the end of the last line
-			  (while (and (looking-at-p "[ \t]*}") (re-search-forward "[ \t]*}" (line-end-position) t))
-				(setq endbrace-count (- endbrace-count 1)))
-			  ;; first find last non-blank line
-			  (forward-line -1)
-			  (while (looking-at-p "[ \t]*$")
-				(forward-line -1))
-			  ;; count how many "}" there are at the beginning of the line (which is currently the last line)
-			  ;; INCREMENT because these are working against what parse-partial-sexp finds
-			  (while (and (looking-at-p "[ \t]*}") (re-search-forward "[ \t]*}" (line-end-position) t))
-				(setq endbrace-count (+ endbrace-count 1)))
-			  ;; add in the indentation for this S-EXP level
-			  (+ (current-indentation)
-				 (* default-tab-width
-					(+ (car (parse-partial-sexp (line-beginning-position) (line-end-position)))
-					   endbrace-count)))))))
+			(let ((special-indent (sourcepawn-mode-single-line-block-p)))
+			  (if (not (null special-indent))
+				  (+ default-tab-width special-indent) ;; indent once, we're special
+				;; we're not special :(
+				;; check our relative matching-parens ()[]{} depth in the last line
+				;; and indent in or out that much relative to last line's indentation
+				(save-excursion
+				  ;; count how many "}" there are on the line we will indent
+				  ;; DECREMENT because we want these to act like the end of the last line
+				  (while (and (looking-at-p "[ \t]*}") (re-search-forward "[ \t]*}" (line-end-position) t))
+					(setq endbrace-count (- endbrace-count 1)))
+				  ;; first find last non-blank line, non-special line
+				  (forward-line -1)
+				  (while (and (not (bobp)) (or (looking-at-p "[ \t]*$") (sourcepawn-mode-single-line-block-p)))
+					(forward-line -1))
+				  ;; count how many "}" there are at the beginning of the line (which is currently the last line)
+				  ;; INCREMENT because these are working against what parse-partial-sexp finds
+				  (while (and (looking-at-p "[ \t]*}") (re-search-forward "[ \t]*}" (line-end-position) t))
+					(setq endbrace-count (+ endbrace-count 1)))
+				  ;; add in the indentation for this S-EXP level
+				  (+ (current-indentation)
+					 (* default-tab-width
+						(+ (car (parse-partial-sexp (line-beginning-position) (line-end-position)))
+						   endbrace-count)))))))))
 	ret))
 
 ;; define our mode
