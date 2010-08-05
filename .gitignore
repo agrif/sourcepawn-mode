@@ -4,3 +4,8 @@ sp-include/
 # these are generated files
 keywords/generated/
 sourcepawn-mode.el
+
+# distfiles
+sourcepawn-mode-*.tar.gz
+sourcepawn-mode-*.tar.bz2
+sourcepawn-mode-*.zip
