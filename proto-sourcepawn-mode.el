@@ -139,7 +139,7 @@
 		  nil)))))
 
 ;; our indentation function
-;; TODO: lines after braceless if (...) and proper point handling on indent
+;; FIXME: proper point handling on indent
 (defun sourcepawn-mode-indent-line ()
   "Indent the current line as SourcePawn code."
   (interactive)
