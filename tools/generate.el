@@ -1,7 +1,7 @@
 ;; read in a list of files, and print out optimized regexps
 ;; that match any word from that file
 
-(setq input-file "proto-sourcepawn-mode.el")
+(setq input-file "sourcepawn-mode.el.in")
 (setq output-file "sourcepawn-mode.el")
 (setq start-section ";; -!- start generated keywords")
 (setq end-section   ";; -!- end generated keywords")

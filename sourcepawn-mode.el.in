@@ -19,11 +19,11 @@
 
 ;;; Installation:
 
-;; NOTE: the file `proto-sourcepawn-mode.el` is used to GENERATE the
-;; file `sourcepawn-mode.el`, which is what you should install. DO NOT
-;; USE the proto version: it will not work. Instead, see the README
-;; for how to generate the real file, or get a pregenerated file from
-;; my website, linked above.
+;; NOTE: the file `sourcepawn-mode.el.in` is used to GENERATE the file
+;; `sourcepawn-mode.el`, which is what you should install. DO NOT USE
+;; the .in version: it will not work. Instead, see the README for how
+;; to generate the real file, or get a pregenerated file from my
+;; website, linked above.
 ;;
 ;; Installation instructions:
 ;;
