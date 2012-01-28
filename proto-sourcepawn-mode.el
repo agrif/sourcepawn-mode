@@ -1,7 +1,9 @@
-;; sourcepawn-mode.el - SourcePawn major mode for emacs
+;;; proto-sourcepawn-mode.el --- SourcePawn major mode for emacs
 ;; Copyright (c) 2010, Aaron Griffith <aargri@gmail.com>
 ;; This file is licensed under the GNU GPL -- see below.
 ;;
+;;; Commentary:
+
 ;; SourcePawn is a scripting language for SourceMod, which can be
 ;; found at <http://www.sourcemod.net/>,
 ;;
@@ -66,6 +68,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                       END OF DOCUMENTATION                       ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; Code:
 
 ;; STILL TODO - customize, compile? menus? tags?
 
