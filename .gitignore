@@ -3,7 +3,6 @@ sp-include/
 
 # these are generated files
 keywords/generated/
-sourcepawn-mode.el
 *.elc
 
 # distfiles

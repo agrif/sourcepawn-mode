@@ -1,7 +1,11 @@
-;;; proto-sourcepawn-mode.el --- SourcePawn major mode for emacs
-;; Copyright (c) 2010, Aaron Griffith <aargri@gmail.com>
+;;; sourcepawn-mode.el --- SourcePawn major mode for emacs
+
+;; Copyright (c) 2010, Aaron Griffith
 ;; This file is licensed under the GNU GPL -- see below.
-;;
+
+;; Author: Aaron Griffith <aargri@gmail.com>
+;; Homepage: http://gammalevel.com/teamfortress2/sourcepawn-mode
+
 ;;; Commentary:
 
 ;; SourcePawn is a scripting language for SourceMod, which can be
@@ -13,9 +17,7 @@
 ;; Suggestions, improvements, and bug reports are welcome. Please
 ;; contact me at the email address above!
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;                           INSTALLATION                           ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Installation:
 
 ;; NOTE: the file `proto-sourcepawn-mode.el` is used to GENERATE the
 ;; file `sourcepawn-mode.el`, which is what you should install. DO NOT
@@ -46,9 +48,7 @@
 ;;    (add-hook 'sourcepawn-mode-hook 'my-sourcepawn-mode-hook)
 ;;
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;                              LICENSE                             ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; License:
 
 ;; This file is released under the GNU GPL.
 ;;
@@ -56,18 +56,14 @@
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
 ;; (at your option) any later version.
-
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
-
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;                       END OF DOCUMENTATION                       ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Code:
 
@@ -250,3 +246,5 @@
 
 ;; tell emacs we provide sourcepawn-mode
 (provide 'sourcepawn-mode)
+
+;;; sourcepawn-mode.el ends here
