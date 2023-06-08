@@ -263,6 +263,7 @@ indentation of the start of that block."
 	  "The default syntax highlighting rules for sourcepawn-mode.")
 
 ;; define our mode
+;;;###autoload
 (define-derived-mode sourcepawn-mode fundamental-mode
   "SourcePawn"
   "Major mode to edit SourcePawn source files."
@@ -279,8 +280,8 @@ indentation of the start of that block."
   (set (make-local-variable 'comment-end) ""))
 
 ;; register it to auto-load on *.sp files
-;; Or, leave it up to the user (as I have)
-;(add-to-list 'auto-mode-alist '(".sp\\'" . sourcepawn-mode))
+;;;###autoload
+(add-to-list 'auto-mode-alist '("\\.sp\\'" . sourcepawn-mode))
 
 ;; tell emacs we provide sourcepawn-mode
 (provide 'sourcepawn-mode)
