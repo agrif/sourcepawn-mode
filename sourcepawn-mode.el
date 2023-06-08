@@ -14,7 +14,7 @@
 ;; More (and nicer) documentation for sourcepawn-mode may be found at
 ;; <http://gamma-level.com/teamfortress2/sourcepawn-mode>.
 ;;
-;; Suggestions, improvements, and bug reports are welcome. Please
+;; Suggestions, improvements, and bug reports are welcome.  Please
 ;; contact me at the email address above!
 
 ;;; Installation:
@@ -77,20 +77,24 @@
 ;; breaking down the variable name match regexp into parts
 (defvar sourcepawn-mode-font-lock-regexp-variable-names
   "\\(?:\\(?:\\sw\\)+:\\)?\\(\\(?:\\sw\\)+\\)\\(?:[ \t]*\\[[^,;\n]*\\]\\)?\\(?:[ \t]*=[ \t]*\\(?:\\sw\\|\\s_\\|[ \t]\\)+\\)?"
-  "A regexp that matches the list part of SourcePawn variable declarations, e.g. 'String:test[256] = \"test\"'. The variable name must be in group 1.")
+  "A regexp that matches the list part of SourcePawn variable declarations,
+e.g. 'String:test[256] = \"test\"'. The variable name must be in group 1.")
 
 (defvar sourcepawn-mode-font-lock-regexp-variable-names-prefix
   "\\(?:new\\|decl\\)[ \t]+"
-  "A regexp that matches the part of a variable declaration before the variable names list. Must have no numbered groups.")
+  "A regexp that matches the part of a variable declaration before the
+variable names list. Must have no numbered groups.")
 
 (defvar sourcepawn-mode-font-lock-regexp-variable-names-seperator
   "[ \t]*,[ \t]*"
-  "A regexp that matches the seperator between a variable declaration list element. Must have no numbered groups.")
+  "A regexp that matches the seperator between a variable declaration list
+element. Must have no numbered groups.")
 
 ;; helper to tell us when our last match succeeded
 (defvar sourcepawn-mode-font-lock-flag-inside-variable-declaration
   nil
-  "A flag that, when t, means sourcepawn-mode-font-lock-matcher-variable-names is inside a variable declaration.")
+  "A flag that, when t, means sourcepawn-mode-font-lock-matcher-variable-names
+is inside a variable declaration.")
 
 ;; the function to match variable names
 (defun sourcepawn-mode-font-lock-matcher-variable-names (limit)
@@ -117,7 +121,8 @@
 ;; tells us when we are directly after a non-braced if/while/for statement
 ;; returns nil if not, or the indentation of the if/while/for if it is
 (defun sourcepawn-mode-single-line-block-p ()
-  "Tells us if the current line is a single-expression block, and returns the indentation of the start of that block."
+  "Tells us if the current line is a single-expression block, and returns the
+indentation of the start of that block."
   (save-excursion
 	(beginning-of-line)
 	;; can't be a special block if we start with a brace!
@@ -131,7 +136,7 @@
 							(if (re-search-forward "\\(//\\|/\\*\\)" (line-end-position) t)
 								(match-beginning 1)
 							  (line-end-position))))
-		(if (and 
+		(if (and
 			 (re-search-forward "[ \t]*\\<\\(?:if\\|while\\|for\\)\\>[ \t]*([^\n]*)[ \t]*" limit-point t)
 			 (equal (point) limit-point))
 			(current-indentation)
@@ -161,7 +166,7 @@
 			  ;; not first line, what should we indent to?
 			  (let ((special-indent (sourcepawn-mode-single-line-block-p)))
 				(if (not (null special-indent))
-					(+ default-tab-width special-indent) ;; indent once, we're special
+					(+ tab-width special-indent) ;; indent once, we're special
 				  ;; we're not special :(
 				  ;; check our relative matching-parens ()[]{} depth in the last line
 				  ;; and indent in or out that much relative to last line's indentation
@@ -180,7 +185,7 @@
 					  (setq endbrace-count (+ endbrace-count 1)))
 					;; add in the indentation for this S-EXP level
 					(+ (current-indentation)
-					   (* default-tab-width
+					   (* tab-width
 						  (+ (car (parse-partial-sexp (line-beginning-position) (line-end-position)))
 							 endbrace-count))))))))))
 	ret))
