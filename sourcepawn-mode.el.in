@@ -1,8 +1,9 @@
-;;; sourcepawn-mode.el --- SourcePawn major mode for emacs
+;;; sourcepawn-mode.el --- SourcePawn major mode
 
 ;; Copyright (c) 2010, Aaron Griffith
 ;; This file is licensed under the GNU GPL -- see below.
 
+;; Version: -!- generated version inserted here -!-
 ;; Author: Aaron Griffith <aargri@gmail.com>
 ;; Homepage: http://gammalevel.com/teamfortress2/sourcepawn-mode
 
@@ -72,38 +73,40 @@
 ;; define the mode hook list
 (defvar sourcepawn-mode-hook
   nil
-  "A list for storing sourcepawn-mode hooks.")
+  "Hook called by `sourcepawn-mode'.")
 
 ;; breaking down the variable name match regexp into parts
 (defvar sourcepawn-mode-font-lock-regexp-variable-names
   "\\(?:\\(?:\\sw\\)+:\\)?\\(\\(?:\\sw\\)+\\)\\(?:[ \t]*\\[[^,;\n]*\\]\\)?\\(?:[ \t]*=[ \t]*\\(?:\\sw\\|\\s_\\|[ \t]\\)+\\)?"
-  "A regexp that matches the list part of SourcePawn variable declarations,
-e.g. 'String:test[256] = \"test\"'. The variable name must be in group 1.")
+  "Match the list part of SourcePawn variable declarations.
+The list part consists of strings like 'String:test[256] = \"test\"'.
+The variable name must be in group 1.")
 
 (defvar sourcepawn-mode-font-lock-regexp-variable-names-prefix
   "\\(?:new\\|decl\\)[ \t]+"
-  "A regexp that matches the part of a variable declaration before the
-variable names list. Must have no numbered groups.")
+  "Match the part of a variable declaration before the variable names list.
+Must have no numbered groups.")
 
 (defvar sourcepawn-mode-font-lock-regexp-variable-names-seperator
   "[ \t]*,[ \t]*"
-  "A regexp that matches the seperator between a variable declaration list
-element. Must have no numbered groups.")
+  "Match the seperator between a variable declaration list element.
+Must have no numbered groups.")
 
 ;; helper to tell us when our last match succeeded
 (defvar sourcepawn-mode-font-lock-flag-inside-variable-declaration
   nil
-  "A flag that, when t, means sourcepawn-mode-font-lock-matcher-variable-names
-is inside a variable declaration.")
+  "When t, indicates the matcher is inside a variable declaration.
+This is used by `sourcepawn-mode-font-lock-matcher-variable-names'.")
 
 ;; the function to match variable names
 (defun sourcepawn-mode-font-lock-matcher-variable-names (limit)
-  "A font lock matcher function for SourcePawn variable declarations."
+  "A font lock matcher function for SourcePawn variable declarations.
+The argument LIMIT is a buffer position that bounds the match."
   (let ((start-regexp (concat sourcepawn-mode-font-lock-regexp-variable-names-prefix sourcepawn-mode-font-lock-regexp-variable-names))
-		(list-regexp (concat sourcepawn-mode-font-lock-regexp-variable-names-seperator sourcepawn-mode-font-lock-regexp-variable-names)))
-	(if (not (and sourcepawn-mode-font-lock-flag-inside-variable-declaration (looking-at list-regexp)))
-		(setq sourcepawn-mode-font-lock-flag-inside-variable-declaration (re-search-forward start-regexp limit t))
-	  (setq sourcepawn-mode-font-lock-flag-inside-variable-declaration (re-search-forward list-regexp limit t)))))
+        (list-regexp (concat sourcepawn-mode-font-lock-regexp-variable-names-seperator sourcepawn-mode-font-lock-regexp-variable-names)))
+    (if (not (and sourcepawn-mode-font-lock-flag-inside-variable-declaration (looking-at list-regexp)))
+        (setq sourcepawn-mode-font-lock-flag-inside-variable-declaration (re-search-forward start-regexp limit t))
+      (setq sourcepawn-mode-font-lock-flag-inside-variable-declaration (re-search-forward list-regexp limit t)))))
 
 ;; set up the syntax table
 (defvar sourcepawn-mode-syntax-table
@@ -116,13 +119,14 @@ is inside a variable declaration.")
 	(modify-syntax-entry ?* "_ 23" st)
 	(modify-syntax-entry (string-to-char "\n") "> b")
 	st)
-  "Syntax table for sourcepawn-mode.")
+  "Syntax table for `sourcepawn-mode'.")
 
 ;; tells us when we are directly after a non-braced if/while/for statement
 ;; returns nil if not, or the indentation of the if/while/for if it is
 (defun sourcepawn-mode-single-line-block-p ()
-  "Tells us if the current line is a single-expression block, and returns the
-indentation of the start of that block."
+  "Find the indentation of a single-expression block, or nil.
+If the current line is a single-expression block, this returns the
+indentation of the start of that block.  Otherwise, it returns nil."
   (save-excursion
 	(beginning-of-line)
 	;; can't be a special block if we start with a brace!
@@ -144,7 +148,8 @@ indentation of the start of that block."
 
 ;; a replacement for indent-line-to with sane point management
 (defun sourcepawn-mode-indent-line-to (column)
-  "Like indent-line-to but with sane point management."
+  "Like `indent-line-to' but with sane point management.
+Indent current line to COLUMN."
   (if (string-match "^[ \\t]*$" (buffer-substring (point-at-bol) (point)))
 	  (indent-line-to column)
 	(save-excursion (indent-line-to column))))
@@ -165,7 +170,7 @@ indentation of the start of that block."
 				0 ;; first line
 			  ;; not first line, what should we indent to?
 			  (let ((special-indent (sourcepawn-mode-single-line-block-p)))
-				(if (not (null special-indent))
+				(if special-indent
 					(+ tab-width special-indent) ;; indent once, we're special
 				  ;; we're not special :(
 				  ;; check our relative matching-parens ()[]{} depth in the last line
@@ -225,9 +230,8 @@ indentation of the start of that block."
 		(,sourcepawn-mode-font-lock-regexp-generated-forwards 1 font-lock-function-name-face)
 		
 		;; variable declarations
-		(sourcepawn-mode-font-lock-matcher-variable-names 1 font-lock-variable-name-face)
-	   )
-	  "The default syntax highlighting rules for sourcepawn-mode.")
+		(sourcepawn-mode-font-lock-matcher-variable-names 1 font-lock-variable-name-face))
+	  "The default syntax highlighting rules for `sourcepawn-mode'.")
 
 ;; define our mode
 ;;;###autoload

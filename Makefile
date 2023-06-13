@@ -1,6 +1,6 @@
 .PHONY : all clean scan generate dist
 
-VERSION=0.3~git
+VERSION=0.3-git
 
 all : scan generate
 
@@ -9,7 +9,7 @@ clean :
 	rm keywords/generated/*.txt
 
 generate :
-	emacs --script tools/generate.el
+	emacs --script tools/generate.el "${VERSION}"
 
 scan :
 	emacs --script tools/scan.el

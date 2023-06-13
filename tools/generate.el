@@ -5,6 +5,7 @@
 (setq output-file "sourcepawn-mode.el")
 (setq start-section ";; -!- start generated keywords")
 (setq end-section   ";; -!- end generated keywords")
+(setq version-template "-!- generated version inserted here -!-")
 
 (setq file-list '("keywords/keywords.txt" "keywords/constants.txt" "keywords/types.txt" "keywords/preprocessor.txt" "keywords/generated/generated-constants.txt" "keywords/generated/generated-types.txt" "keywords/generated/generated-forwards.txt" "keywords/generated/generated-natives-stocks.txt"))
 
@@ -53,10 +54,16 @@
 						(format "\n(defvar sourcepawn-mode-font-lock-regexp-%s\n  %S\n  %S)\n" (car regexp) (cdr regexp) docstring)))
 					(files-to-regexp file-list)))))
 
-(defun replace-block-in-file (filename-in filename delim-begin delim-end contents)
+(defun replace-version ()
+  "Replace the version template string with the Makefile's provided version."
+  (if (re-search-forward (regexp-quote version-template) nil t)
+      (replace-match (elt argv 0))))
+
+(defun replace-block-in-file (filename-in filename delim-begin delim-end hook contents)
   "Replace the block between lines delim-begin and delim-end in filename with contents."
   (with-temp-buffer
 	(insert-file-contents filename-in)
+    (funcall hook)
 	(goto-char (point-min))
 	(while (not (or (eobp) (string-equal delim-begin (buffer-substring (line-beginning-position) (line-end-position)))))
 	  (forward-line))
@@ -68,7 +75,7 @@
 		(delete-region (line-beginning-position) (save-excursion (forward-line) (line-beginning-position))))
 	  (if (eobp)
 		  t
-		(write-file filename)))))
+		(progn (write-file filename) nil)))))
 
-(if (replace-block-in-file input-file output-file start-section end-section (files-to-lisp-code file-list))
+(if (replace-block-in-file input-file output-file start-section end-section 'replace-version (files-to-lisp-code file-list))
 	(message "An error occurred, and the file was left unmodified for safety."))
