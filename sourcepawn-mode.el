@@ -111,14 +111,14 @@ The argument LIMIT is a buffer position that bounds the match."
 ;; set up the syntax table
 (defvar sourcepawn-mode-syntax-table
   (let ((st (make-syntax-table)))
-	;; make _ a words character, so tokens == words, and word movement commands make sense
-	(modify-syntax-entry ?_ "w" st)
-	
-	;; syntax classes used in C and C++ style comments
-	(modify-syntax-entry ?/ "_ 124b" st)
-	(modify-syntax-entry ?* "_ 23" st)
-	(modify-syntax-entry (string-to-char "\n") "> b")
-	st)
+    ;; make _ a words character, so tokens == words, and word movement commands make sense
+    (modify-syntax-entry ?_ "w" st)
+
+    ;; syntax classes used in C and C++ style comments
+    (modify-syntax-entry ?/ "_ 124b" st)
+    (modify-syntax-entry ?* "_ 23" st)
+    (modify-syntax-entry (string-to-char "\n") "> b")
+    st)
   "Syntax table for `sourcepawn-mode'.")
 
 ;; tells us when we are directly after a non-braced if/while/for statement
@@ -128,31 +128,31 @@ The argument LIMIT is a buffer position that bounds the match."
 If the current line is a single-expression block, this returns the
 indentation of the start of that block.  Otherwise, it returns nil."
   (save-excursion
-	(beginning-of-line)
-	;; can't be a special block if we start with a brace!
-	(if (or (bobp) (looking-at "[ \t]*{"))
-		nil
-	  (forward-line -1)
-	  (beginning-of-line)
-	  (let ((limit-point (point)))
-		(setq limit-point (save-excursion
-							;; put point at the end of the line, or the start of a comment
-							(if (re-search-forward "\\(//\\|/\\*\\)" (line-end-position) t)
-								(match-beginning 1)
-							  (line-end-position))))
-		(if (and
-			 (re-search-forward "[ \t]*\\<\\(?:if\\|while\\|for\\)\\>[ \t]*([^\n]*)[ \t]*" limit-point t)
-			 (equal (point) limit-point))
-			(current-indentation)
-		  nil)))))
+    (beginning-of-line)
+    ;; can't be a special block if we start with a brace!
+    (if (or (bobp) (looking-at "[ \t]*{"))
+        nil
+      (forward-line -1)
+      (beginning-of-line)
+      (let ((limit-point (point)))
+        (setq limit-point (save-excursion
+                            ;; put point at the end of the line, or the start of a comment
+                            (if (re-search-forward "\\(//\\|/\\*\\)" (line-end-position) t)
+                                (match-beginning 1)
+                              (line-end-position))))
+        (if (and
+             (re-search-forward "[ \t]*\\<\\(?:if\\|while\\|for\\)\\>[ \t]*([^\n]*)[ \t]*" limit-point t)
+             (equal (point) limit-point))
+            (current-indentation)
+          nil)))))
 
 ;; a replacement for indent-line-to with sane point management
 (defun sourcepawn-mode-indent-line-to (column)
   "Like `indent-line-to' but with sane point management.
 Indent current line to COLUMN."
   (if (string-match "^[ \\t]*$" (buffer-substring (point-at-bol) (point)))
-	  (indent-line-to column)
-	(save-excursion (indent-line-to column))))
+      (indent-line-to column)
+    (save-excursion (indent-line-to column))))
 
 ;; our indentation function
 (defun sourcepawn-mode-indent-line ()
@@ -161,39 +161,39 @@ Indent current line to COLUMN."
   ;; set ret to 'noindent to signal indentation cannot be done
   ;; endbrace-count stores how many "}" we see right at the beginning of the line
   (let (ret (endbrace-count 0))
-	(sourcepawn-mode-indent-line-to
-	 ;; make sure we don't indent to a negative
-	 (max 0
-		  (save-excursion
-			(beginning-of-line)
-			(if (bobp)
-				0 ;; first line
-			  ;; not first line, what should we indent to?
-			  (let ((special-indent (sourcepawn-mode-single-line-block-p)))
-				(if special-indent
-					(+ tab-width special-indent) ;; indent once, we're special
-				  ;; we're not special :(
-				  ;; check our relative matching-parens ()[]{} depth in the last line
-				  ;; and indent in or out that much relative to last line's indentation
-				  ;; count how many "}" there are on the line we will indent
-				  ;; DECREMENT because we want these to act like the end of the last line
-				  (save-excursion
-					(while (and (looking-at "[ \t]*}") (re-search-forward "[ \t]*}" (line-end-position) t))
-					  (setq endbrace-count (- endbrace-count 1)))
-					;; first find last non-blank line, non-special line
-					(forward-line -1)
-					(while (and (not (bobp)) (or (looking-at "[ \t]*$") (sourcepawn-mode-single-line-block-p)))
-					  (forward-line -1))
-					;; count how many "}" there are at the beginning of the line (which is currently the last line)
-					;; INCREMENT because these are working against what parse-partial-sexp finds
-					(while (and (looking-at "[ \t]*}") (re-search-forward "[ \t]*}" (line-end-position) t))
-					  (setq endbrace-count (+ endbrace-count 1)))
-					;; add in the indentation for this S-EXP level
-					(+ (current-indentation)
-					   (* tab-width
-						  (+ (car (parse-partial-sexp (line-beginning-position) (line-end-position)))
-							 endbrace-count))))))))))
-	ret))
+    (sourcepawn-mode-indent-line-to
+     ;; make sure we don't indent to a negative
+     (max 0
+          (save-excursion
+            (beginning-of-line)
+            (if (bobp)
+                0 ;; first line
+              ;; not first line, what should we indent to?
+              (let ((special-indent (sourcepawn-mode-single-line-block-p)))
+                (if special-indent
+                    (+ tab-width special-indent) ;; indent once, we're special
+                  ;; we're not special :(
+                  ;; check our relative matching-parens ()[]{} depth in the last line
+                  ;; and indent in or out that much relative to last line's indentation
+                  ;; count how many "}" there are on the line we will indent
+                  ;; DECREMENT because we want these to act like the end of the last line
+                  (save-excursion
+                    (while (and (looking-at "[ \t]*}") (re-search-forward "[ \t]*}" (line-end-position) t))
+                      (setq endbrace-count (- endbrace-count 1)))
+                    ;; first find last non-blank line, non-special line
+                    (forward-line -1)
+                    (while (and (not (bobp)) (or (looking-at "[ \t]*$") (sourcepawn-mode-single-line-block-p)))
+                      (forward-line -1))
+                    ;; count how many "}" there are at the beginning of the line (which is currently the last line)
+                    ;; INCREMENT because these are working against what parse-partial-sexp finds
+                    (while (and (looking-at "[ \t]*}") (re-search-forward "[ \t]*}" (line-end-position) t))
+                      (setq endbrace-count (+ endbrace-count 1)))
+                    ;; add in the indentation for this S-EXP level
+                    (+ (current-indentation)
+                       (* tab-width
+                          (+ (car (parse-partial-sexp (line-beginning-position) (line-end-position)))
+                             endbrace-count))))))))))
+    ret))
 
 ;; Symbol lists auto-generated from SourcePawn includes. As such, there may be errors.
 ;; DO NOT CHANGE the parts after this comment, before the end -!- comment
@@ -243,28 +243,28 @@ Indent current line to COLUMN."
 
 ;; set up the syntax highlighting defaults
 (defvar sourcepawn-mode-font-lock-defaults
-	  `(
-		;; preprocessor statements
-		(,sourcepawn-mode-font-lock-regexp-preprocessor-full 0 font-lock-preprocessor-face keep)
-		;; string color for braced include statements
-		("#[iI][nN][cC][lL][uU][dD][eE][ \t]+\\(<.*>\\)" 1 font-lock-string-face t)
-		;; variable def color for define statements
-		("#[dD][eE][fF][iI][nN][eE][ \t]+\\<\\(\\(?:\\sw\\)+\\)\\>" 1 font-lock-variable-name-face)
-		
-		(,sourcepawn-mode-font-lock-regexp-keywords 1 font-lock-keyword-face)
+      `(
+        ;; preprocessor statements
+        (,sourcepawn-mode-font-lock-regexp-preprocessor-full 0 font-lock-preprocessor-face keep)
+        ;; string color for braced include statements
+        ("#[iI][nN][cC][lL][uU][dD][eE][ \t]+\\(<.*>\\)" 1 font-lock-string-face t)
+        ;; variable def color for define statements
+        ("#[dD][eE][fF][iI][nN][eE][ \t]+\\<\\(\\(?:\\sw\\)+\\)\\>" 1 font-lock-variable-name-face)
 
-		(,sourcepawn-mode-font-lock-regexp-types 1 font-lock-type-face)
-		(,sourcepawn-mode-font-lock-regexp-generated-types 1 font-lock-type-face)
-		
-		(,sourcepawn-mode-font-lock-regexp-constants 1 font-lock-constant-face)
-		(,sourcepawn-mode-font-lock-regexp-generated-constants 1 font-lock-constant-face)
-		
-		(,sourcepawn-mode-font-lock-regexp-generated-natives-stocks 1 font-lock-builtin-face)
-		(,sourcepawn-mode-font-lock-regexp-generated-forwards 1 font-lock-function-name-face)
-		
-		;; variable declarations
-		(sourcepawn-mode-font-lock-matcher-variable-names 1 font-lock-variable-name-face))
-	  "The default syntax highlighting rules for `sourcepawn-mode'.")
+        (,sourcepawn-mode-font-lock-regexp-keywords 1 font-lock-keyword-face)
+
+        (,sourcepawn-mode-font-lock-regexp-types 1 font-lock-type-face)
+        (,sourcepawn-mode-font-lock-regexp-generated-types 1 font-lock-type-face)
+
+        (,sourcepawn-mode-font-lock-regexp-constants 1 font-lock-constant-face)
+        (,sourcepawn-mode-font-lock-regexp-generated-constants 1 font-lock-constant-face)
+
+        (,sourcepawn-mode-font-lock-regexp-generated-natives-stocks 1 font-lock-builtin-face)
+        (,sourcepawn-mode-font-lock-regexp-generated-forwards 1 font-lock-function-name-face)
+
+        ;; variable declarations
+        (sourcepawn-mode-font-lock-matcher-variable-names 1 font-lock-variable-name-face))
+      "The default syntax highlighting rules for `sourcepawn-mode'.")
 
 ;; define our mode
 ;;;###autoload
@@ -273,7 +273,7 @@ Indent current line to COLUMN."
   "Major mode to edit SourcePawn source files."
   :syntax-table sourcepawn-mode-syntax-table
   (set (make-local-variable 'font-lock-defaults)
-	   '(sourcepawn-mode-font-lock-defaults nil))
+       '(sourcepawn-mode-font-lock-defaults nil))
 
   ;; indentation
   (set (make-local-variable 'indent-line-function) 'sourcepawn-mode-indent-line)
